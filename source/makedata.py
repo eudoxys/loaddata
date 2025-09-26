@@ -167,9 +167,11 @@ def get_commercial(state_usps,state_fips,puma,building_type):
         
         return None
 
-def get_state(state_usps,state_fips,year=2018,scalar=None):
+def get_state(state_usps,year=2018,scalar=None):
 
-    verbose(f"Processing {state_usps}...")
+    state_fips = states.fips(state_usps)
+
+    verbose(f"Processing {state_usps} (fips={state_fips})...")
     geodata = dict(
         temperature = [],
         wind = [],
@@ -258,8 +260,8 @@ def get_state(state_usps,state_fips,year=2018,scalar=None):
 
 if __name__ == "__main__":
 
-    for state_usps,state_fips in [(states.state_codes_byname[x]["usps"],states.state_codes_byname[x]["fips"]) for x in config.state_list if x in states.state_codes_byname]:
+    for state_usps in [states.state_codes_byname[x]["usps"] for x in config.state_list if x in states.state_codes_byname]:
 
-        get_state(state_usps,state_fips)
+        get_state(state_usps)
 
     print("done")
