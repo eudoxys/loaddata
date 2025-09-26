@@ -260,8 +260,9 @@ def get_state(state_usps,year=2018,scalar=None):
 
 if __name__ == "__main__":
 
+    print("Processing all US states...",flush=True)
     for state_usps in [states.state_codes_byname[x]["usps"] for x in config.state_list if x in states.state_codes_byname]:
 
         get_state(state_usps)
 
-    print("done")
+    print("Done")
