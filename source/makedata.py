@@ -167,7 +167,7 @@ def get_commercial(state_usps,state_fips,puma,building_type):
         
         return None
 
-def get_state(state_usps,year=2018,scalar=None):
+def get_state(state_usps,year=2018,scalar=1.0):
 
     state_fips = states.fips(state_usps)
 
@@ -243,18 +243,17 @@ def get_state(state_usps,year=2018,scalar=None):
     cooling = pd.concat(geodata["cooling"],axis=1)
     model = total.sum().sum()/1000
 
-    if scalar is None:
-        eia = pd.read_csv("../data/US/eia_electricity_annual.csv",
-            skiprows=4,header=0).dropna(subset="source key")
-        ndx = [tuple(x.split(".")[2].split("-")) for x in eia["source key"].astype(str).values.tolist()]
-        eia["group"] = [x[0] for x in ndx]
-        eia["subgroup"] = [x[1] for x in ndx]
-        eia.set_index(["group","subgroup"],inplace=True)
-        eia.sort_index(inplace=True)
-        actual = sum([float(eia.loc["AL",x]["2018"].values[0]) for x in ["RES","COM"]])
-        scalar = actual / model
+    eia = pd.read_csv("../data/US/eia_electricity_annual.csv",
+        skiprows=4,header=0).dropna(subset="source key")
+    ndx = [tuple(x.split(".")[2].split("-")) for x in eia["source key"].astype(str).values.tolist()]
+    eia["group"] = [x[0] for x in ndx]
+    eia["subgroup"] = [x[1] for x in ndx]
+    eia.set_index(["group","subgroup"],inplace=True)
+    eia.sort_index(inplace=True)
+    actual0 = sum([float(eia.loc[state_usps,x]["2018"].values[0]) for x in ["RES","COM"]])
+    actual = sum([float(eia.loc[state_usps,x][str(year)].values[0]) for x in ["RES","COM"]])
 
-    result = {x:(pd.concat(y,axis=1)*scalar).round(3) for x,y in geodata.items()}
+    result = {x:(pd.concat(y,axis=1)*scalar*actual/model).round(3) for x,y in geodata.items()}
     return result
 
 
