@@ -20,6 +20,7 @@ Geodata panels are organized by timestamps in rows and geohashes in columns. The
 
 To read the load data for a state, e.g., California, use the following 
 
+	from makedata import get_state
 	data = get_state("CA")
 
 The result will be a dict with the weather and load data in separate dataframes, with
