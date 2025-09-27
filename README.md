@@ -25,3 +25,12 @@ To read the load data for a state, e.g., California, use the following
 
 The result will be a dict with the weather and load data in separate dataframes, with
 time in rows, and county geodata in columns.
+
+You can scale the load to any particular year in the EIA annual energy file using the command:
+
+	data = get_state("CA",year=2022)
+
+In addition, you can apply your own load growth relative to a particular year, e.g., 7% higher than 2024:
+
+	data = get_state("CA",year=2024,scalar=1.07)
+
